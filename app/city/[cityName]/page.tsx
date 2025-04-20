@@ -6,7 +6,13 @@ import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/lib/store"
 import { fetchProjects } from "@/lib/features/projects/projectsSlice"
 import ProjectList from "@/components/project-list"
-import MapView from "@/components/map-view"
+// import MapView from "@/components/map-view"
+
+import dynamic from "next/dynamic"
+
+const MapView = dynamic(() => import("@/components/map-view"), { ssr: false })
+
+
 import LoadingSpinner from "@/components/loading-spinner"
 import ErrorDisplay from "@/components/error-display"
 
