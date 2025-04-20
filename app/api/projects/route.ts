@@ -65,15 +65,27 @@ export async function GET(request: Request) {
 async function scrapeProjects(city: string) {
   try {
     const { data } = await axios.get(`https://www.magicbricks.com/new-projects-${city}`, {
+      // headers: {
+      //   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+      //   "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      //   "Accept-Language": "en-US,en;q=0.5",
+      //   "Accept-Encoding": "gzip, deflate, br",
+      //   "Connection": "keep-alive",
+      //   "Upgrade-Insecure-Requests": "1",
+      //   "Cache-Control": "max-age=0"
+      // },
+      
       headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.5",
-        "Accept-Encoding": "gzip, deflate, br",
+        "Referer": `https://www.magicbricks.com/`,
+        "DNT": "1",
         "Connection": "keep-alive",
         "Upgrade-Insecure-Requests": "1",
-        "Cache-Control": "max-age=0"
-      },
+      }
+
+      
     })
 
     const $ = cheerio.load(data)
@@ -105,6 +117,7 @@ async function getCoordinates(location: string) {
   }
 
   const url = `http://api.positionstack.com/v1/forward?access_key=${positionStackKey}&query=${encodeURIComponent(location)}&limit=1`
+  // const url = ``
 
   try {
     const res = await axios.get(url)
