@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import axios from "axios"
 import * as cheerio from "cheerio"
+// import puppeteer from "puppeteer";
 
 // Removed redundant require statement for cheerio
 import { v4 as uuidv4 } from "uuid"
@@ -62,30 +63,54 @@ export async function GET(request: Request) {
   }
 }
 
+
+// async function scrapeProjects(city: string) {
+//   try {
+//     const url = `https://www.magicbricks.com/new-projects-${city}`;
+//     const browser = await puppeteer.launch({ headless: true });
+//     const page = await browser.newPage();
+//     await page.goto(url, { waitUntil: 'networkidle2' });
+
+//     const content = await page.content();
+//     const $ = cheerio.load(content);
+
+//     const projects: { name: string; location: string; priceRange: string; builder: string }[] = [];
+
+//     $(".projdis__newprjs .projdis__prjcard").each((i, elem) => {
+//       const name = $(elem).find(".mghome__prjblk__prjname").text().trim();
+//       const location = $(elem).find(".mghome__prjblk__locname").text().trim();
+//       const priceRange = $(elem).find(".mghome__prjblk__price").text().trim();
+//       const builder = $(elem).find(".mghome__prjblk__builder").text().trim();
+
+//       if (name && location) {
+//         projects.push({ name, location, priceRange, builder });
+//       }
+//     });
+
+//     await browser.close();
+//     return projects;
+//   } catch (err) {
+//     console.error("Scraping error:", err)
+//     throw new Error("Failed to scrape projects")
+//   }
+// }
+
+
+
 async function scrapeProjects(city: string) {
   try {
     const { data } = await axios.get(`https://www.magicbricks.com/new-projects-${city}`, {
-      // headers: {
-      //   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-      //   "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-      //   "Accept-Language": "en-US,en;q=0.5",
-      //   "Accept-Encoding": "gzip, deflate, br",
-      //   "Connection": "keep-alive",
-      //   "Upgrade-Insecure-Requests": "1",
-      //   "Cache-Control": "max-age=0"
-      // },
-      
       headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.5",
-        "Referer": `https://www.magicbricks.com/`,
-        "DNT": "1",
+        "Accept-Encoding": "gzip, deflate, br",
         "Connection": "keep-alive",
         "Upgrade-Insecure-Requests": "1",
-      }
+        "Cache-Control": "max-age=0"
+      },
 
-      
+
     })
 
     const $ = cheerio.load(data)
@@ -110,6 +135,12 @@ async function scrapeProjects(city: string) {
   }
 }
 
+
+
+
+
+
+
 async function getCoordinates(location: string) {
   if (!positionStackKey) {
     console.error("PositionStack API key is not defined")
@@ -117,7 +148,6 @@ async function getCoordinates(location: string) {
   }
 
   const url = `http://api.positionstack.com/v1/forward?access_key=${positionStackKey}&query=${encodeURIComponent(location)}&limit=1`
-  // const url = ``
 
   try {
     const res = await axios.get(url)
